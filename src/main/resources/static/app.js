@@ -1,12 +1,22 @@
 var app = angular.module('trackifyApp', ['ngMaterial','md.data.table']);
-app.controller('liveStatusCtrl', function($scope, $http, $interval) {
+app.controller('liveStatusCtrl', function($scope, $http, $interval, $filter) {
 
 	$scope.deviceDetails={};
 	$interval(checkDeviceStatus, 5000);
 
 	function checkDeviceStatus(){
 		$http.get("/deviceLiveStatus")
-		.then(function (response) {$scope.deviceDetails = response.data;});
+		.then(function (response) {
+			if(null==response.data || undefined == response.data){
+				$window.alert("No data found!")
+			}else{
+				$scope.allDeviceDetails = response.data;
+				$scope.upDeviceDetails = $filter('filter')($scope.allDeviceDetails, {status: true});
+				$scope.downDeviceDetails = $filter('filter')($scope.allDeviceDetails, {status: false});
+				
+			}
+
+			});
 
 	}
 });
@@ -20,7 +30,6 @@ app.controller('statusCtrl', function($scope, $http, $interval, $window) {
 		$http.get("/deviceLog", {
 			params: { "deviceId": $scope.deviceId }
 		}).then(function (response) {
-			console.log(response);
 			if(null==response.data || undefined == response.data){
 				$window.alert("No data found!")
 			}else{
@@ -39,7 +48,7 @@ app.filter('secondsToTime', function() {
 
 	return function(_seconds) {
 		if (typeof _seconds !== "number" || _seconds < 0)
-			return "00:00:00";
+			return "";
 
 		var hours = Math.floor(_seconds / 3600),
 		minutes = Math.floor((_seconds % 3600) / 60),

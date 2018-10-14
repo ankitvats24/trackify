@@ -36,40 +36,43 @@
 }
 
 .red {
-	background-color: red !important;
+	color: red !important;
 }
 
 .green {
-	background-color: green !important;
+	color: green !important;
 }
 </style>
 </head>
 <body ng-app="trackifyApp">
 	<div ng-cloak>
 		<md-content> <md-tabs md-dynamic-height md-border-bottom>
-		<md-tab label="Device Live Status">
+		<md-tab label="Devices Live Status">
 		<div ng-controller="liveStatusCtrl">
 			<md-content class="md-padding"> <md-table-container>
 			<table md-table>
 				<thead md-head>
 					<tr md-row>
-						<th md-column>Device IP</th>
-						<th md-column>Device Name</th>
-						<th md-column>Status</th>
-						<th md-column>Up Time</th>
-						<th md-column>Down Time</th>
-						<th md-column>Last Updated</th>
+						<th md-column>Sr No.</th>
+						<th md-column>All</th>
+						<th md-column>Up</th>
+						<th md-column>Down</th>
 					</tr>
 				</thead>
 				<tbody md-body>
-					<tr md-row ng-repeat="device in deviceDetails">
-						<td md-cell>{{device.deviceId}}</td>
-						<td md-cell>{{device.deviceName}}</td>
-						<td md-cell
-							ng-class='{red : !device.status, green: device.status}'></td>
-						<td md-cell>{{device.upTime | secondsToTime}}</td>
-						<td md-cell>{{device.downTime | secondsToTime}}</td>
-						<td md-cell>{{device.logTime}}</td>
+					<tr md-row ng-repeat="device in allDeviceDetails track by $index">
+						<td md-cell>{{$index+1}}</td>
+						<td md-cell ng-class='{red : !device.status, green: device.status}'><span>{{device.deviceName}}<br>{{device.deviceId}}</span></td>
+						
+						<td md-cell ng-class='{green: true}'><span ng-show="{{upDeviceDetails[$index].deviceName!=null}}">
+						{{upDeviceDetails[$index].deviceName}}<br>{{upDeviceDetails[$index].deviceId}}<br>
+						{{upDeviceDetails[$index].upTime | secondsToTime}} hr(s)<br>
+						<span style="text-align: right;" ng-class='{red: true}'>{{upDeviceDetails[$index].downTime | secondsToTime}} hr(s)</span></span></td>
+						
+						<td md-cell ng-class='{red: true}'><span ng-show="{{downDeviceDetails[$index].deviceName!=null}}">
+						{{downDeviceDetails[$index].deviceName}}<br>{{downDeviceDetails[$index].deviceId}}<br>
+						<span ng-class='{green: true}'>{{downDeviceDetails[$index].upTime | secondsToTime}} hr(s)</span><br>
+						{{downDeviceDetails[$index].downTime | secondsToTime}} hr(s)</span></td>
 					</tr>
 				</tbody>
 			</table>
