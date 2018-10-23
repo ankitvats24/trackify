@@ -35,7 +35,10 @@ public class Processor implements Runnable{
 			upTimeRepo.updateUpTimeStatus(upTimeModel);
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(upTimeModel.getDeviceId() + " Unreachable");
+			upTimeModel.setStatus(false);
+			upTimeRepo.logDeviceStatus(upTimeModel);
+			upTimeRepo.updateUpTimeStatus(upTimeModel);
 		}
 
 	}

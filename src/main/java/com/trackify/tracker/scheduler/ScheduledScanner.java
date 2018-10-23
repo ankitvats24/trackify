@@ -28,12 +28,14 @@ public class ScheduledScanner {
 	private String deviceDetailsFilePth;
 	private List<UpTimeModel> deviceList;
 	private boolean initialized = false;
+	ExecutorService exec = null;
 	@Autowired
 	public ScheduledScanner(@Value("${device.details.file.path}") final String deviceDetailsFilePth, 
 			@Value("${device.isreachable.timeout}") final int isReachableTimeout) throws IOException {
 		this.deviceDetailsFilePth=deviceDetailsFilePth;
 		this.isReachableTimeout=isReachableTimeout;
 		setDeviceList();
+		this.exec = Executors.newFixedThreadPool(this.deviceList.size());
 	}
 	void setDeviceList() throws IOException {
 		System.out.println("---- "+deviceDetailsFilePth);
@@ -54,7 +56,7 @@ public class ScheduledScanner {
 	@Scheduled(fixedDelayString="${schedular.interval:5}000")
 	public void run() {
 		final int ADDRESS_COUNT = deviceList.size();
-		ExecutorService exec = Executors.newFixedThreadPool(ADDRESS_COUNT);
+		
 
 		List<Future<?>> futures = new ArrayList<Future<?>>(ADDRESS_COUNT);
 		for (int count = 0; count < ADDRESS_COUNT; count++) {
