@@ -22,7 +22,6 @@ app.controller('liveStatusCtrl', function($scope, $http, $interval, $filter) {
 });
 app.controller('statusCtrl', function($scope, $http, $interval, $window) {
 
-
 	$scope.deviceId="";
 
 	$scope.getDeviceStatus = function getDeviceStatus(deviceId){
