@@ -38,17 +38,17 @@ public class ScheduledScanner {
 		this.exec = Executors.newFixedThreadPool(this.deviceList.size());
 	}
 	void setDeviceList() throws IOException {
-		System.out.println("---- "+deviceDetailsFilePth);
-		System.out.println("---- "+isReachableTimeout);
 		List<String> ipList = FileUtils.readLines(new File(deviceDetailsFilePth), "utf-8");
 
 		List<UpTimeModel> deviceList = new ArrayList<>();
 		for(String deviceDetails : ipList) {
-			String[] deviceIpName = deviceDetails.split(",");
-			UpTimeModel upTimeModel = new UpTimeModel();
-			upTimeModel.setDeviceId(deviceIpName[0]);
-			upTimeModel.setDeviceName(deviceIpName[1]);
-			deviceList.add(upTimeModel);
+			if(!"".equalsIgnoreCase(deviceDetails.trim())) {
+				String[] deviceIpName = deviceDetails.split(",");
+				UpTimeModel upTimeModel = new UpTimeModel();
+				upTimeModel.setDeviceId(deviceIpName[0].trim());
+				upTimeModel.setDeviceName(deviceIpName[1].trim());
+				deviceList.add(upTimeModel);
+			}
 		}
 
 		this.deviceList = deviceList;
@@ -56,7 +56,7 @@ public class ScheduledScanner {
 	@Scheduled(fixedDelayString="${schedular.interval:5}000")
 	public void run() {
 		final int ADDRESS_COUNT = deviceList.size();
-		
+
 
 		List<Future<?>> futures = new ArrayList<Future<?>>(ADDRESS_COUNT);
 		for (int count = 0; count < ADDRESS_COUNT; count++) {

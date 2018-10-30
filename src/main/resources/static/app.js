@@ -12,6 +12,7 @@ app.controller('liveStatusCtrl', function($scope, $http, $interval, $filter) {
 			}else{
 				$scope.allDeviceDetails = response.data;
 				$scope.upDeviceDetails = $filter('filter')($scope.allDeviceDetails, {status: true});
+				console.log($scope.upDeviceDetails);
 				$scope.downDeviceDetails = $filter('filter')($scope.allDeviceDetails, {status: false});
 				
 			}

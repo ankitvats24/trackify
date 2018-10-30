@@ -49,34 +49,67 @@
 		<md-content> <md-tabs md-dynamic-height md-border-bottom>
 		<md-tab label="Devices Live Status">
 		<div ng-controller="liveStatusCtrl">
-			<md-content class="md-padding"> 
-			<table style="width: 100%;">
-				<thead style="color:white;background-color:#4B0082;">
-					<tr>
-						<th>Sr No.</th>
-						<th>All</th>
-						<th>Up</th>
-						<th>Down</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr style="background-color:white;" ng-repeat="device in allDeviceDetails track by $index">
-						<td>{{$index+1}}</td>
-						<td ng-class='{red : !device.status, green: device.status}'><span>{{device.deviceName}}<br>{{device.deviceId}}</span></td>
-						
-						<td ng-class='{green: true}'><span ng-show="{{upDeviceDetails[$index].deviceName!=null}}">
-						{{upDeviceDetails[$index].deviceName}}<br>{{upDeviceDetails[$index].deviceId}}<br>
-						{{upDeviceDetails[$index].upTime | secondsToTime}} hr(s)<br>
-						<span style="text-align: right;" ng-class='{red: true}'>{{upDeviceDetails[$index].downTime | secondsToTime}} hr(s)</span></span></td>
-						
-						<td ng-class='{red: true}'><span ng-show="{{downDeviceDetails[$index].deviceName!=null}}">
-						{{downDeviceDetails[$index].deviceName}}<br>{{downDeviceDetails[$index].deviceId}}<br>
-						<span ng-class='{green: true}'>{{downDeviceDetails[$index].upTime | secondsToTime}} hr(s)</span><br>
-						{{downDeviceDetails[$index].downTime | secondsToTime}} hr(s)</span></td>
-					</tr>
-				</tbody>
-			</table>
-			 </md-content>
+			<md-content class="md-padding">
+			<div layout="row">
+				<table style="width: 100%;">
+					<thead style="color: white; background-color: #4B0082;">
+						<tr>
+							<th>Sr No.</th>
+							<th>All</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr style="background-color: white;"
+							ng-repeat="device in allDeviceDetails track by $index">
+							<td>{{$index+1}}</td>
+							<td ng-class='{red : !device.status, green: device.status}'><span>{{device.deviceName}}<br>{{device.deviceId}}
+							</span></td>
+						</tr>
+					</tbody>
+				</table>
+				<table style="width: 100%;">
+					<thead style="color: white; background-color: #4B0082;">
+						<tr>
+							<th>Sr No.</th>
+							<th>Up</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr style="background-color: white;"
+							ng-repeat="device in upDeviceDetails track by $index">
+							<td>{{$index+1}}</td>
+
+							<td ng-class='{green: true}'>
+									{{upDeviceDetails[$index].deviceName}}<br>{{upDeviceDetails[$index].deviceId}}<br>
+									{{upDeviceDetails[$index].upTime | secondsToTime}} hr(s)<br>
+									<span style="text-align: right;" ng-class='{red: true}'>{{upDeviceDetails[$index].downTime
+										| secondsToTime}} hr(s)</span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<table style="width: 100%;">
+					<thead style="color: white; background-color: #4B0082;">
+						<tr>
+							<th>Sr No.</th>
+							<th>Down</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr style="background-color: white;"
+							ng-repeat="device in downDeviceDetails track by $index">
+							<td>{{$index+1}}</td>
+							<td ng-class='{red: true}'>
+									{{downDeviceDetails[$index].deviceName}}<br>{{downDeviceDetails[$index].deviceId}}<br>
+									<span ng-class='{green: true}'>{{downDeviceDetails[$index].upTime
+										| secondsToTime}} hr(s)</span><br>
+									{{downDeviceDetails[$index].downTime | secondsToTime}} hr(s)
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			</md-content>
 		</div>
 		</md-tab> <!-- <md-tab label="Device Status History"> <md-content
 			layout-padding>
