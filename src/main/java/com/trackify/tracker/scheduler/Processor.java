@@ -26,10 +26,10 @@ public class Processor implements Runnable{
 		try {
 			if (PingUtil.isReachable(1, timeout, upTimeModel.getDeviceId())) {
 				upTimeModel.setStatus(true);
-				logger.info("{} Available", upTimeModel.getDeviceId());
+				
 			}else {
 				upTimeModel.setStatus(false);
-				logger.warn("{} Unavailable", upTimeModel.getDeviceId());
+				
 			}
 			upTimeRepo.logDeviceStatus(upTimeModel);
 			upTimeRepo.updateUpTimeStatus(upTimeModel);

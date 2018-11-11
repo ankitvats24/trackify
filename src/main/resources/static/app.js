@@ -3,7 +3,8 @@ app.controller('liveStatusCtrl', function($scope, $http, $interval, $filter) {
 
 	$scope.deviceDetails={};
 	$interval(checkDeviceStatus, 5000);
-
+	$scope.orderBy='status';
+	$scope.reverse=true;
 	function checkDeviceStatus(){
 		$http.get("/deviceLiveStatus")
 		.then(function (response) {
@@ -12,7 +13,6 @@ app.controller('liveStatusCtrl', function($scope, $http, $interval, $filter) {
 			}else{
 				$scope.allDeviceDetails = response.data;
 				$scope.upDeviceDetails = $filter('filter')($scope.allDeviceDetails, {status: true});
-				console.log($scope.upDeviceDetails);
 				$scope.downDeviceDetails = $filter('filter')($scope.allDeviceDetails, {status: false});
 				
 			}

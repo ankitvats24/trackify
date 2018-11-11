@@ -36,7 +36,8 @@ public class UpTimeRepo {
 		namedParameters.addValue("status", upTimeModel.isStatus());
 		namedParameters.addValue("upTime", 0);
 		namedParameters.addValue("downTime", 0);
-		String sql = "insert into device_uptime_tracker values(:deviceId,:deviceName,:logTime,:status,:upTime,:downTime)";
+		namedParameters.addValue("createdDate", new Date());
+		String sql = "insert into device_uptime_tracker values(:deviceId,:deviceName,:logTime,:status,:upTime,:downTime,:createdDate)";
 		namedJdbcTemplate.update(sql, namedParameters);
 	}
 	
@@ -46,11 +47,11 @@ public class UpTimeRepo {
 		namedParameters.addValue("deviceId", upTimeModel.getDeviceId());
 		namedParameters.addValue("logTime", new Timestamp(new Date().getTime()));
 		namedParameters.addValue("status", upTimeModel.isStatus());
-
+		namedParameters.addValue("createdDate", new Date());
 		if(upTimeModel.isStatus()) {
-			sql = "update device_uptime_tracker set log_time=:logTime, status=:status, up_time=CASE WHEN STATUS='TRUE' THEN (up_time + DATE_PART('second', :logTime::timestamp-log_time)) ELSE (up_time + DATE_PART('second', :logTime::timestamp-log_time)/2) END, down_time=CASE WHEN STATUS='TRUE' THEN down_time + 0 ELSE down_time + DATE_PART('second', :logTime::timestamp-log_time)/2 END WHERE DEVICE_ID=:deviceId";
+			sql = "update device_uptime_tracker set log_time=:logTime, status=:status, up_time=CASE WHEN STATUS='TRUE' THEN (up_time + DATE_PART('second', :logTime::timestamp-log_time)) ELSE (up_time + DATE_PART('second', :logTime::timestamp-log_time)/2) END, down_time=CASE WHEN STATUS='TRUE' THEN down_time + 0 ELSE down_time + DATE_PART('second', :logTime::timestamp-log_time)/2 END WHERE DEVICE_ID=:deviceId AND CREATED_DATE=:createdDate";
 		}else {
-			sql = "update device_uptime_tracker set log_time=:logTime, status=:status, up_time=CASE WHEN STATUS='TRUE' THEN (up_time + DATE_PART('second', :logTime::timestamp-log_time)/2) ELSE up_time+0 END, down_time=CASE WHEN STATUS='TRUE' THEN (up_time + DATE_PART('second', :logTime::timestamp-log_time)/2) ELSE down_time + DATE_PART('second', :logTime::timestamp - log_time) END WHERE DEVICE_ID=:deviceId";
+			sql = "update device_uptime_tracker set log_time=:logTime, status=:status, up_time=CASE WHEN STATUS='TRUE' THEN (up_time + DATE_PART('second', :logTime::timestamp-log_time)/2) ELSE up_time+0 END, down_time=CASE WHEN STATUS='TRUE' THEN (up_time + DATE_PART('second', :logTime::timestamp-log_time)/2) ELSE down_time + DATE_PART('second', :logTime::timestamp - log_time) END WHERE DEVICE_ID=:deviceId AND CREATED_DATE=:createdDate";
 		}
 		namedJdbcTemplate.update(sql, namedParameters);
 	}
@@ -68,8 +69,10 @@ public class UpTimeRepo {
 
 	public String getUpTimeStatus() {
 		String json = "{}";
-		String sql = "select device_name, device_id, log_time, status, up_time, down_time from device_uptime_tracker order by status";
-		List<UpTimeModel> upTimeModelList = jdbcTemplate.query(sql, new BeanPropertyRowMapper<UpTimeModel>(UpTimeModel.class));
+		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+		namedParameters.addValue("createdDate", new Date());
+		String sql = "select device_name, device_id, log_time, status, up_time, down_time from device_uptime_tracker where created_date = :createdDate order by status";
+		List<UpTimeModel> upTimeModelList = namedJdbcTemplate.query(sql, namedParameters, new BeanPropertyRowMapper<UpTimeModel>(UpTimeModel.class));
 		if(null != upTimeModelList && !upTimeModelList.isEmpty()) {
 			try {
 				json = new ObjectMapper().writeValueAsString(upTimeModelList);
@@ -83,8 +86,12 @@ public class UpTimeRepo {
 
 	public String getUpTimeLog(String deviceId) {
 		String json = "{}";
-		String sql = "select log_time, status from device_status_tracker where device_id=? order by log_time desc";
-		List<UpTimeModel> upTimeModelList = jdbcTemplate.query(sql, new Object[]{deviceId}, new BeanPropertyRowMapper<UpTimeModel>(UpTimeModel.class));
+		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+		namedParameters.addValue("deviceId", deviceId);
+		namedParameters.addValue("createdDate", new Date());
+		
+		String sql = "select log_time, status from device_status_tracker where device_id=:deviceId and date(log_time)=:createdDate order by log_time desc";
+		List<UpTimeModel> upTimeModelList = namedJdbcTemplate.query(sql, namedParameters, new BeanPropertyRowMapper<UpTimeModel>(UpTimeModel.class));
 		if(null != upTimeModelList && !upTimeModelList.isEmpty()) {
 			try {
 				json = new ObjectMapper().writeValueAsString(upTimeModelList);

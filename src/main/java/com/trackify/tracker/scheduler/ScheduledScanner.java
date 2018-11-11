@@ -53,6 +53,7 @@ public class ScheduledScanner {
 
 		this.deviceList = deviceList;
 	}
+
 	@Scheduled(fixedDelayString="${schedular.interval:5}000")
 	public void run() {
 		final int ADDRESS_COUNT = deviceList.size();
@@ -78,8 +79,11 @@ public class ScheduledScanner {
 				e.printStackTrace();
 			}
 		}
-		logger.info("Scan Completed");
 
 	}
 
+	@Scheduled(cron = "0 0 12 * * ?")
+	public void resetTime() {
+		initialized = false;
+	}
 }

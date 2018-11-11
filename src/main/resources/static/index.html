@@ -42,14 +42,34 @@
 .green {
 	color: green !important;
 }
+.redCell {
+	background-color: red !important;
+}
+
+.greenCell {
+	background-color: green !important;
+}
 </style>
 </head>
 <body ng-app="trackifyApp">
+
 	<div ng-cloak>
 		<md-content> <md-tabs md-dynamic-height md-border-bottom>
 		<md-tab label="Devices Live Status">
+
 		<div ng-controller="liveStatusCtrl">
+
 			<md-content class="md-padding">
+			<div layout="row">
+				<md-input-container class="md-block" flex-gt-sm>
+				<label>Sort/Order by</label> <md-select ng-model="orderBy">
+				<md-option value='upTime'> UpTime asc </md-option> <md-option
+					value='-upTime'> UpTime desc </md-option> <md-option
+					value='downTime'> DownTime asc </md-option> <md-option
+					value='-downTime'> DownTime desc </md-option> <md-option
+					value='-status'> Status Up </md-option> <md-option value='status'>
+				Status Down </md-option> </md-select> </md-input-container>
+			</div>
 			<div layout="row">
 				<table style="width: 100%;">
 					<thead style="color: white; background-color: #4B0082;">
@@ -60,7 +80,7 @@
 					</thead>
 					<tbody>
 						<tr style="background-color: white;"
-							ng-repeat="device in allDeviceDetails track by $index">
+							ng-repeat="device in allDeviceDetails | orderBy:orderBy">
 							<td>{{$index+1}}</td>
 							<td ng-class='{red : !device.status, green: device.status}'><span>{{device.deviceName}}<br>{{device.deviceId}}
 							</span></td>
@@ -80,10 +100,10 @@
 							<td>{{$index+1}}</td>
 
 							<td ng-class='{green: true}'>
-									{{upDeviceDetails[$index].deviceName}}<br>{{upDeviceDetails[$index].deviceId}}<br>
-									{{upDeviceDetails[$index].upTime | secondsToTime}} hr(s)<br>
-									<span style="text-align: right;" ng-class='{red: true}'>{{upDeviceDetails[$index].downTime
-										| secondsToTime}} hr(s)</span>
+								{{upDeviceDetails[$index].deviceName}}<br>{{upDeviceDetails[$index].deviceId}}<br>
+								{{upDeviceDetails[$index].upTime | secondsToTime}} hr(s)<br>
+								<span style="text-align: right;" ng-class='{red: true}'>{{upDeviceDetails[$index].downTime
+									| secondsToTime}} hr(s)</span>
 							</td>
 						</tr>
 					</tbody>
@@ -100,10 +120,10 @@
 							ng-repeat="device in downDeviceDetails track by $index">
 							<td>{{$index+1}}</td>
 							<td ng-class='{red: true}'>
-									{{downDeviceDetails[$index].deviceName}}<br>{{downDeviceDetails[$index].deviceId}}<br>
-									<span ng-class='{green: true}'>{{downDeviceDetails[$index].upTime
-										| secondsToTime}} hr(s)</span><br>
-									{{downDeviceDetails[$index].downTime | secondsToTime}} hr(s)
+								{{downDeviceDetails[$index].deviceName}}<br>{{downDeviceDetails[$index].deviceId}}<br>
+								<span ng-class='{green: true}'>{{downDeviceDetails[$index].upTime
+									| secondsToTime}} hr(s)</span><br>
+								{{downDeviceDetails[$index].downTime | secondsToTime}} hr(s)
 							</td>
 						</tr>
 					</tbody>
@@ -111,7 +131,7 @@
 			</div>
 			</md-content>
 		</div>
-		</md-tab> <!-- <md-tab label="Device Status History"> <md-content
+		</md-tab> <md-tab label="Device Status History"> <md-content
 			layout-padding>
 
 		<div ng-controller="statusCtrl">
@@ -120,31 +140,35 @@
 
 				<div layout-gt-xs="row">
 					<md-input-container class="md-block"> <label>IP
-						Address</label> <input name="deviceId" ng-model="deviceId" ng-pattern='/^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$/' required> 
-						<div ng-messages="statusForm.deviceId.$error" ng-show="statusForm.deviceId.$error">
-      						<div ng-message="required">IP Address is required!</div>
-      						<div ng-message="pattern">Valid IP Address is required</div>
-    					</div>
-						</md-input-container>
+						Address</label> <input name="deviceId" ng-model="deviceId"
+						ng-pattern='/^([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})[.]([0-9]{1,3})$/'
+						required>
+					<div ng-messages="statusForm.deviceId.$error"
+						ng-show="statusForm.deviceId.$error">
+						<div ng-message="required">IP Address is required!</div>
+						<div ng-message="pattern">Valid IP Address is required</div>
+					</div>
+					</md-input-container>
 					<md-input-container class="md-block"> <md-button
-						class="md-raised md-primary" ng-click="getDeviceStatus(statusForm.deviceId)" ng-disabled="statusForm.$invalid">Get Details</md-button> </md-input-container>
+						class="md-raised md-primary"
+						ng-click="getDeviceStatus(statusForm.deviceId)"
+						ng-disabled="statusForm.$invalid">Get Details</md-button> </md-input-container>
 				</div>
 			</form>
 
 			<md-divider></md-divider>
 
-			<table md-table>
-				<thead md-head>
-					<tr md-row>
-						<th md-column>Status</th>
-						<th md-column>Log Time</th>
+			<table style="width: 30%;">
+				<thead style="color: white; background-color: #4B0082;">
+					<tr>
+						<th>Status</th>
+						<th>Log Time</th>
 					</tr>
 				</thead>
-				<tbody md-body>
-					<tr md-row ng-repeat="device in deviceDetails">
-						<td md-cell
-							ng-class='{red : !device.status, green: device.status}'></td>
-						<td md-cell>{{device.logTime}}</td>
+				<tbody>
+					<tr ng-repeat="device in deviceDetails">
+						<td ng-class='{redCell : !device.status, greenCell: device.status}'></td>
+						<td style="text-align:center" ng-class='{red : !device.status, green: device.status}'>{{device.logTime}}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -152,7 +176,7 @@
 			</md-content>
 		</div>
 
-		</md-content> </md-tab> --> </md-tabs> </md-content>
+		</md-content> </md-tab> </md-tabs> </md-content>
 	</div>
 </body>
 </html>
