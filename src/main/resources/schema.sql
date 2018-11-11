@@ -1,18 +1,18 @@
-DROP TABLE IF EXISTS DEVICE_UPTIME_TRACKER;
-DROP TABLE IF EXISTS DEVICE_STATUS_TRACKER;
-CREATE TABLE IF NOT EXISTS DEVICE_UPTIME_TRACKER
+drop table if exists device_uptime_tracker;
+drop table if exists device_status_tracker;
+create table if not exists device_uptime_tracker
 (
-   DEVICE_ID VARCHAR(15) not null,
-   DEVICE_NAME VARCHAR(250) not null,
-   LOG_TIME TIMESTAMP not null,
-   STATUS BIT not null,
-   UP_TIME INT not null,
-   DOWN_TIME INT not null
+   device_id varchar(15) not null,
+   device_name varchar(250) not null,
+   log_time timestamp not null,
+   status boolean not null,
+   up_time integer not null,
+   down_time integer not null
 );
-CREATE TABLE IF NOT EXISTS DEVICE_STATUS_TRACKER
+create table if not exists device_status_tracker
 (
-   DEVICE_ID VARCHAR(15) not null,
-   DEVICE_NAME VARCHAR(250) not null,
-   LOG_TIME TIMESTAMP not null,
-   STATUS BIT not null
+   device_id varchar(15) not null,
+   device_name varchar(250) not null,
+   log_time timestamp not null,
+   status boolean not null
 );

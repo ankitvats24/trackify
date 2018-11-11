@@ -36,7 +36,7 @@ public class UpTimeRepo {
 		namedParameters.addValue("status", upTimeModel.isStatus());
 		namedParameters.addValue("upTime", 0);
 		namedParameters.addValue("downTime", 0);
-		String sql = "INSERT INTO DEVICE_UPTIME_TRACKER VALUES(:deviceId,:deviceName,:logTime,:status,:upTime,:downTime)";
+		String sql = "insert into device_uptime_tracker values(:deviceId,:deviceName,:logTime,:status,:upTime,:downTime)";
 		namedJdbcTemplate.update(sql, namedParameters);
 	}
 	
@@ -48,9 +48,9 @@ public class UpTimeRepo {
 		namedParameters.addValue("status", upTimeModel.isStatus());
 
 		if(upTimeModel.isStatus()) {
-			sql = "UPDATE DEVICE_UPTIME_TRACKER SET LOG_TIME=:logTime, STATUS=:status, UP_TIME=CASEWHEN(STATUS='TRUE',(UP_TIME + DATEDIFF('SECOND', LOG_TIME, :logTime)),(UP_TIME + DATEDIFF('SECOND', LOG_TIME, :logTime)/2)), DOWN_TIME=CASEWHEN(STATUS='TRUE',DOWN_TIME + 0,(DOWN_TIME + DATEDIFF('SECOND', LOG_TIME, :logTime)/2))  WHERE DEVICE_ID=:deviceId";
+			sql = "update device_uptime_tracker set log_time=:logTime, status=:status, up_time=CASE WHEN STATUS='TRUE' THEN (up_time + DATE_PART('second', :logTime::timestamp-log_time)) ELSE (up_time + DATE_PART('second', :logTime::timestamp-log_time)/2) END, down_time=CASE WHEN STATUS='TRUE' THEN down_time + 0 ELSE down_time + DATE_PART('second', :logTime::timestamp-log_time)/2 END WHERE DEVICE_ID=:deviceId";
 		}else {
-			sql = "UPDATE DEVICE_UPTIME_TRACKER SET LOG_TIME=:logTime, STATUS=:status, UP_TIME=CASEWHEN(STATUS='TRUE',(UP_TIME + DATEDIFF('SECOND', LOG_TIME, :logTime)/2),UP_TIME+0), DOWN_TIME=CASEWHEN(STATUS='TRUE',(DOWN_TIME + DATEDIFF('SECOND', LOG_TIME, :logTime)/2),DOWN_TIME + DATEDIFF('SECOND', LOG_TIME, :logTime))  WHERE DEVICE_ID=:deviceId";
+			sql = "update device_uptime_tracker set log_time=:logTime, status=:status, up_time=CASE WHEN STATUS='TRUE' THEN (up_time + DATE_PART('second', :logTime::timestamp-log_time)/2) ELSE up_time+0 END, down_time=CASE WHEN STATUS='TRUE' THEN (up_time + DATE_PART('second', :logTime::timestamp-log_time)/2) ELSE down_time + DATE_PART('second', :logTime::timestamp - log_time) END WHERE DEVICE_ID=:deviceId";
 		}
 		namedJdbcTemplate.update(sql, namedParameters);
 	}
@@ -62,13 +62,13 @@ public class UpTimeRepo {
 		namedParameters.addValue("deviceName", upTimeModel.getDeviceName());
 		namedParameters.addValue("logTime", new Timestamp(new Date().getTime()));
 		namedParameters.addValue("status", upTimeModel.isStatus());
-		String sql = "INSERT INTO DEVICE_STATUS_TRACKER VALUES(:deviceId,:deviceName,:logTime,:status)";
+		String sql = "insert into device_status_tracker values(:deviceId,:deviceName,:logTime,:status)";
 		namedJdbcTemplate.update(sql, namedParameters);
 	}
 
 	public String getUpTimeStatus() {
 		String json = "{}";
-		String sql = "SELECT DEVICE_NAME, DEVICE_ID, LOG_TIME, STATUS, UP_TIME, DOWN_TIME FROM DEVICE_UPTIME_TRACKER ORDER BY STATUS";
+		String sql = "select device_name, device_id, log_time, status, up_time, down_time from device_uptime_tracker order by status";
 		List<UpTimeModel> upTimeModelList = jdbcTemplate.query(sql, new BeanPropertyRowMapper<UpTimeModel>(UpTimeModel.class));
 		if(null != upTimeModelList && !upTimeModelList.isEmpty()) {
 			try {
@@ -83,7 +83,7 @@ public class UpTimeRepo {
 
 	public String getUpTimeLog(String deviceId) {
 		String json = "{}";
-		String sql = "SELECT LOG_TIME, STATUS FROM DEVICE_STATUS_TRACKER WHERE DEVICE_ID=? ORDER BY LOG_TIME DESC";
+		String sql = "select log_time, status from device_status_tracker where device_id=? order by log_time desc";
 		List<UpTimeModel> upTimeModelList = jdbcTemplate.query(sql, new Object[]{deviceId}, new BeanPropertyRowMapper<UpTimeModel>(UpTimeModel.class));
 		if(null != upTimeModelList && !upTimeModelList.isEmpty()) {
 			try {
