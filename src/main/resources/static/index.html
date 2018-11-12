@@ -42,6 +42,7 @@
 .green {
 	color: green !important;
 }
+
 .redCell {
 	background-color: red !important;
 }
@@ -54,6 +55,10 @@
 <body ng-app="trackifyApp">
 
 	<div ng-cloak>
+	<div style="background-color:#0d5db8">
+		 <img src="logo.svg" style="height:50px;margin-left:0px"
+			alt="image caption">
+			</div>
 		<md-content> <md-tabs md-dynamic-height md-border-bottom>
 		<md-tab label="Devices Live Status">
 
@@ -167,8 +172,10 @@
 				</thead>
 				<tbody>
 					<tr ng-repeat="device in deviceDetails">
-						<td ng-class='{redCell : !device.status, greenCell: device.status}'></td>
-						<td style="text-align:center" ng-class='{red : !device.status, green: device.status}'>{{device.logTime}}</td>
+						<td
+							ng-class='{redCell : !device.status, greenCell: device.status}'></td>
+						<td style="text-align: center"
+							ng-class='{red : !device.status, green: device.status}'>{{device.logTime}}</td>
 					</tr>
 				</tbody>
 			</table>
