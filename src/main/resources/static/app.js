@@ -1,5 +1,9 @@
 var app = angular.module('trackifyApp', ['ngMaterial','md.data.table']);
-app.controller('liveStatusCtrl', function($scope, $http, $interval, $filter) {
+app.controller('liveStatusCtrl', function($scope, $http, $interval, $filter, $window) {
+
+	$scope.startDate = new Date();
+	$scope.endDate = new Date();
+	$scope.maxDate = new Date();
 
 	$scope.deviceDetails={};
 	$interval(checkDeviceStatus, 5000);
@@ -14,12 +18,27 @@ app.controller('liveStatusCtrl', function($scope, $http, $interval, $filter) {
 				$scope.allDeviceDetails = response.data;
 				$scope.upDeviceDetails = $filter('filter')($scope.allDeviceDetails, {status: true});
 				$scope.downDeviceDetails = $filter('filter')($scope.allDeviceDetails, {status: false});
-				
+
 			}
 
-			});
+		});
 
 	}
+
+	$scope.downloadReport = function () {  
+
+		var start = $filter('date')($scope.startDate, "yyyy-MM-dd");
+		var end = $filter('date')($scope.endDate, "yyyy-MM-dd");
+
+		if(this.startDate<=this.endDate){
+			$window.open("/getReport?start="+start+"&end="+end,'_blank');
+			return;
+		} else {
+			$window.alert("Start date should be earlier than or equal to end date and today !");
+			return;
+		}
+
+	}; 
 });
 app.controller('statusCtrl', function($scope, $http, $interval, $window) {
 

@@ -49,9 +49,9 @@ public class UpTimeRepo {
 		namedParameters.addValue("status", upTimeModel.isStatus());
 		namedParameters.addValue("createdDate", new Date());
 		if(upTimeModel.isStatus()) {
-			sql = "update device_uptime_tracker set log_time=:logTime, status=:status, up_time=CASE WHEN STATUS='TRUE' THEN (up_time + DATE_PART('second', :logTime::timestamp-log_time)) ELSE (up_time + DATE_PART('second', :logTime::timestamp-log_time)/2) END, down_time=CASE WHEN STATUS='TRUE' THEN down_time + 0 ELSE down_time + DATE_PART('second', :logTime::timestamp-log_time)/2 END WHERE DEVICE_ID=:deviceId AND CREATED_DATE=:createdDate";
+			sql = "update device_uptime_tracker set log_time=:logTime, status=:status, up_time=CASE WHEN STATUS='TRUE' THEN (up_time + DATE_PART('second', :logTime::timestamp-log_time)) ELSE (up_time + (DATE_PART('second', :logTime::timestamp-log_time)/2)) END, down_time=CASE WHEN STATUS='TRUE' THEN down_time + 0 ELSE (down_time + (DATE_PART('second', :logTime::timestamp-log_time)/2)) END WHERE DEVICE_ID=:deviceId AND CREATED_DATE=:createdDate";
 		}else {
-			sql = "update device_uptime_tracker set log_time=:logTime, status=:status, up_time=CASE WHEN STATUS='TRUE' THEN (up_time + DATE_PART('second', :logTime::timestamp-log_time)/2) ELSE up_time+0 END, down_time=CASE WHEN STATUS='TRUE' THEN (up_time + DATE_PART('second', :logTime::timestamp-log_time)/2) ELSE down_time + DATE_PART('second', :logTime::timestamp - log_time) END WHERE DEVICE_ID=:deviceId AND CREATED_DATE=:createdDate";
+			sql = "update device_uptime_tracker set log_time=:logTime, status=:status, up_time=CASE WHEN STATUS='TRUE' THEN (up_time + (DATE_PART('second', :logTime::timestamp-log_time)/2)) ELSE up_time+0 END, down_time=CASE WHEN STATUS='TRUE' THEN (down_time + (DATE_PART('second', :logTime::timestamp-log_time)/2)) ELSE down_time + DATE_PART('second', :logTime::timestamp - log_time) END WHERE DEVICE_ID=:deviceId AND CREATED_DATE=:createdDate";
 		}
 		namedJdbcTemplate.update(sql, namedParameters);
 	}
@@ -101,5 +101,11 @@ public class UpTimeRepo {
 			}
 		}
 		return json;
+	}
+	
+	public List<UpTimeModel> getUpTimeReport(String start, String end) {
+
+		String sql = "select device_name, device_id, log_time, status, up_time, down_time, created_date from device_uptime_tracker where created_date between '"+start+"' and '"+end+"' order by status";
+		return jdbcTemplate.query(sql, new BeanPropertyRowMapper<UpTimeModel>(UpTimeModel.class));
 	}
 }

@@ -18,6 +18,12 @@
 <script src="app.js"></script>
 
 <style type="text/css">
+CSS
+HTMLJSCSS
+.datepickerdemoCalendar {
+  /** Demo styles for mdCalendar. */ }
+  .datepickerdemoCalendar label {
+    font-size: x-small; }
 .tabsdemoDynamicHeight md-content {
 	background-color: transparent !important;
 }
@@ -55,10 +61,10 @@
 <body ng-app="trackifyApp">
 
 	<div ng-cloak>
-	<div style="background-color:#0d5db8">
-		 <img src="logo.svg" style="height:50px;margin-left:0px"
-			alt="image caption">
-			</div>
+		<div style="background-color: #0d5db8">
+			<img src="logo.svg" style="height: 50px; margin-left: 0px"
+				alt="image caption">
+		</div>
 		<md-content> <md-tabs md-dynamic-height md-border-bottom>
 		<md-tab label="Devices Live Status">
 
@@ -88,7 +94,11 @@
 							ng-repeat="device in allDeviceDetails | orderBy:orderBy">
 							<td>{{$index+1}}</td>
 							<td ng-class='{red : !device.status, green: device.status}'><span>{{device.deviceName}}<br>{{device.deviceId}}
-							</span></td>
+							</span><br> <span style="text-align: right;"
+								ng-class='{green: true}'>{{device.upTime |
+									secondsToTime}} hr(s)</span><br> <span style="text-align: right;"
+								ng-class='{red: true}'>{{device.downTime |
+									secondsToTime}} hr(s)</span></td>
 						</tr>
 					</tbody>
 				</table>
@@ -183,7 +193,33 @@
 			</md-content>
 		</div>
 
-		</md-content> </md-tab> </md-tabs> </md-content>
+		</md-content> </md-tab> <md-tab label="Report">
+		
+<md-content ng-controller="liveStatusCtrl as ctrl" layout="column" layout-gt-sm="row"
+            layout-padding ng-cloak>
+  <div layout="column" flex-order="1" flex-order-gt-sm="0">
+    <md-subheader>Start Date</md-subheader>
+    <md-calendar ng-model="startDate" md-max-date="maxDate"></md-calendar>
+  </div>
+  <div layout="column" flex-order="1" flex-order-gt-sm="1">
+    <md-subheader>End Date</md-subheader>
+    <md-calendar ng-model="endDate" md-max-date="maxDate"></md-calendar>
+  </div>
+  <div layout="column" flex-order="0" flex-order-gt-sm="2">
+    <md-subheader>Dates</md-subheader>
+    <div>
+      <label>Start</label>
+      <div>{{startDate | date:shortDate}}</div>
+    </div>
+    <div><label>End</label>
+      <div>{{endDate | date:shortDate}}</div>
+    </div>
+    <br>
+    <md-button class="md-raised md-primary" ng-click="downloadReport()">Download</md-button>
+  </div>
+</md-content>
+		
+		</md-tab></md-tabs> </md-content>
 	</div>
 </body>
 </html>

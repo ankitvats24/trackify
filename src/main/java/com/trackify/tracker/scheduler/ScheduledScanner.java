@@ -82,7 +82,7 @@ public class ScheduledScanner {
 
 	}
 
-	@Scheduled(cron = "0 0 12 * * ?")
+	@Scheduled(cron = "0 0 0 * * ?")
 	public void resetTime() {
 		initialized = false;
 	}

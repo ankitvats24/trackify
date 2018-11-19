@@ -1,25 +1,22 @@
 package com.trackify.tracker.model;
 
+import java.sql.Date;
+
 public class UpTimeModel {
 
 	private String deviceName;
 	private String deviceId;
 	private boolean status = false;
 	private String logTime;
-	private double upTime;
-	private double downTime;
+	private int upTime;
+	private int downTime;
+	private Date createdDate;
 	
 	public boolean isStatus() {
 		return status;
 	}
 	public void setStatus(boolean status) {
 		this.status = status;
-	}
-	public double getUpTime() {
-		return upTime;
-	}
-	public void setUpTime(double upTime) {
-		this.upTime = upTime;
 	}
 	public String getDeviceId() {
 		return deviceId;
@@ -33,12 +30,6 @@ public class UpTimeModel {
 	public void setLogTime(String logTime) {
 		this.logTime = logTime;
 	}
-	public double getDownTime() {
-		return downTime;
-	}
-	public void setDownTime(double downTime) {
-		this.downTime = downTime;
-	}
 	public String getDeviceName() {
 		return deviceName;
 	}
@@ -49,5 +40,23 @@ public class UpTimeModel {
 	public String toString() {
 		return "UpTimeModel [deviceName=" + deviceName + ", deviceId=" + deviceId + ", status=" + status + ", logTime="
 				+ logTime + ", upTime=" + upTime + ", downTime=" + downTime + "]";
+	}
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+	public int getUpTime() {
+		return upTime;
+	}
+	public void setUpTime(int upTime) {
+		this.upTime = upTime;
+	}
+	public int getDownTime() {
+		return downTime;
+	}
+	public void setDownTime(int downTime) {
+		this.downTime = downTime;
 	}
 }
