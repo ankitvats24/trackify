@@ -4,6 +4,7 @@ app.controller('liveStatusCtrl', function($scope, $http, $interval, $filter, $wi
 	$scope.startDate = new Date();
 	$scope.endDate = new Date();
 	$scope.maxDate = new Date();
+	$scope.currentTimeMili=0;
 
 	$scope.deviceDetails={};
 	$interval(checkDeviceStatus, 5000);
@@ -12,10 +13,13 @@ app.controller('liveStatusCtrl', function($scope, $http, $interval, $filter, $wi
 	function checkDeviceStatus(){
 		$http.get("/deviceLiveStatus")
 		.then(function (response) {
+			$scope.currentTimeMili = new Date().getTime();
+			console.log($scope.currentTimeMili);
 			if(null==response.data || undefined == response.data){
 				$window.alert("No data found!")
 			}else{
 				$scope.allDeviceDetails = response.data;
+				console.log($scope.allDeviceDetails);
 				$scope.upDeviceDetails = $filter('filter')($scope.allDeviceDetails, {status: true});
 				$scope.downDeviceDetails = $filter('filter')($scope.allDeviceDetails, {status: false});
 

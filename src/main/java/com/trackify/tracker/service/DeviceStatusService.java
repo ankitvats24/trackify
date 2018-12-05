@@ -38,9 +38,9 @@ public class DeviceStatusService {
 			}
 			workbook = new XSSFWorkbook ();
 
-			int rowCount = 0;
+			
 			for(Date d : uniqueDates) {
-
+				int rowCount = 0;
 				Sheet sheet = workbook.createSheet(d.toString());
 
 				Row headerRow = sheet.createRow(rowCount);

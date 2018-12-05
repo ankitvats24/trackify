@@ -5,6 +5,7 @@
 <title>Trackify</title>
 <!-- Angular Material style sheet -->
 <link rel="stylesheet" href="common/material/angular-material.min.css">
+<link rel="stylesheet" href="common/material/icon.css">
 <link rel="stylesheet" href="common/md-data-table.min.css">
 
 <script src="common/angular172/angular.js"></script>
@@ -41,11 +42,11 @@ HTMLJSCSS
 	margin-top: 0;
 }
 
-.red {
+.down {
 	color: red !important;
 }
 
-.green {
+.up {
 	color: green !important;
 }
 
@@ -55,6 +56,9 @@ HTMLJSCSS
 
 .greenCell {
 	background-color: green !important;
+}
+.devicestyle {
+	color: #4d4dff !important;
 }
 </style>
 </head>
@@ -93,11 +97,11 @@ HTMLJSCSS
 						<tr style="background-color: white;"
 							ng-repeat="device in allDeviceDetails | orderBy:orderBy">
 							<td>{{$index+1}}</td>
-							<td ng-class='{red : !device.status, green: device.status}'><span>{{device.deviceName}}<br>{{device.deviceId}}
+							<td ng-class='{down : !device.status, up: device.status}'><span>{{device.deviceName}}<br>{{device.deviceId}}
 							</span><br> <span style="text-align: right;"
-								ng-class='{green: true}'>{{device.upTime |
+								ng-class='{up:true}'>{{device.upTime |
 									secondsToTime}} hr(s)</span><br> <span style="text-align: right;"
-								ng-class='{red: true}'>{{device.downTime |
+								ng-class='{down:true}'>{{device.downTime |
 									secondsToTime}} hr(s)</span></td>
 						</tr>
 					</tbody>
@@ -114,11 +118,11 @@ HTMLJSCSS
 							ng-repeat="device in upDeviceDetails track by $index">
 							<td>{{$index+1}}</td>
 
-							<td ng-class='{green: true}'>
-								{{upDeviceDetails[$index].deviceName}}<br>{{upDeviceDetails[$index].deviceId}}<br>
-								{{upDeviceDetails[$index].upTime | secondsToTime}} hr(s)<br>
-								<span style="text-align: right;" ng-class='{red: true}'>{{upDeviceDetails[$index].downTime
-									| secondsToTime}} hr(s)</span>
+							<td>
+							<span ng-class="devicestyle">{{upDeviceDetails[$index].deviceName}}<br>{{device.deviceId}}</span><br>
+							<span ng-class='{up:true}'><md-icon style="fill:green;" md-svg-src="/common/baseline-thumb_up-24px.svg" aria-label="UP"></md-icon> since {{(currentTimeMili - device.statusLastUpdated)/1000 |
+									secondsToTime}}</span>
+								
 							</td>
 						</tr>
 					</tbody>
@@ -134,11 +138,9 @@ HTMLJSCSS
 						<tr style="background-color: white;"
 							ng-repeat="device in downDeviceDetails track by $index">
 							<td>{{$index+1}}</td>
-							<td ng-class='{red: true}'>
-								{{downDeviceDetails[$index].deviceName}}<br>{{downDeviceDetails[$index].deviceId}}<br>
-								<span ng-class='{green: true}'>{{downDeviceDetails[$index].upTime
-									| secondsToTime}} hr(s)</span><br>
-								{{downDeviceDetails[$index].downTime | secondsToTime}} hr(s)
+							<td>
+								<span ng-class="devicestyle">{{upDeviceDetails[$index].deviceName}}<br>{{device.deviceId}}</span><br>
+								<span ng-class='{down:true}'><md-icon style="fill:red;" md-svg-src="/common/baseline-thumb_down-24px.svg" aria-label="UP"></md-icon> since {{(currentTimeMili - device.statusLastUpdated)/1000 | secondsToTime}} hr(s)</span>
 							</td>
 						</tr>
 					</tbody>
@@ -185,7 +187,7 @@ HTMLJSCSS
 						<td
 							ng-class='{redCell : !device.status, greenCell: device.status}'></td>
 						<td style="text-align: center"
-							ng-class='{red : !device.status, green: device.status}'>{{device.logTime}}</td>
+							ng-class='{down : !device.status, up: device.status}'>{{device.logTime}}</td>
 					</tr>
 				</tbody>
 			</table>

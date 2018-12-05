@@ -57,11 +57,11 @@ public class ScheduledScanner {
 	@Scheduled(fixedDelayString="${schedular.interval:5}000")
 	public void run() {
 		final int ADDRESS_COUNT = deviceList.size();
-
+		int existingRecord = upTimeRepo.checkRecordEntry();
 
 		List<Future<?>> futures = new ArrayList<Future<?>>(ADDRESS_COUNT);
 		for (int count = 0; count < ADDRESS_COUNT; count++) {
-			if(!initialized) {
+			if(!initialized && 0==existingRecord) {
 				upTimeRepo.logUpTimeStatus(deviceList.get(count));
 				if(count == ADDRESS_COUNT-1) {
 					initialized = true;

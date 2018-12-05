@@ -1,6 +1,7 @@
 package com.trackify.tracker.model;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 public class UpTimeModel {
 
@@ -11,6 +12,7 @@ public class UpTimeModel {
 	private int upTime;
 	private int downTime;
 	private Date createdDate;
+	private Timestamp statusLastUpdated;
 	
 	public boolean isStatus() {
 		return status;
@@ -58,5 +60,11 @@ public class UpTimeModel {
 	}
 	public void setDownTime(int downTime) {
 		this.downTime = downTime;
+	}
+	public Timestamp getStatusLastUpdated() {
+		return statusLastUpdated;
+	}
+	public void setStatusLastUpdated(Timestamp statusLastUpdated) {
+		this.statusLastUpdated = statusLastUpdated;
 	}
 }

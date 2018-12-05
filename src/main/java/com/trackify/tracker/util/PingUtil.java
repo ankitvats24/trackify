@@ -35,6 +35,7 @@ public class PingUtil {
 				nReceived++;
 			}
 		}
+		
 		return nReceived > 0;
 	}
 
